@@ -74,7 +74,8 @@
       "node_modules/@sabaki/i18n/**/*",
       "node_modules/dolm/**/*",
       "node_modules/{iconv-lite,safer-buffer}/**/*",
-      "node_modules/pikaday/css/*"
+      "node_modules/pikaday/css/*",
+      "node_modules/better-sqlite3/**/*"
     ]
   },
   "prettier": {
@@ -97,6 +98,7 @@
     "@sabaki/sgf": "^3.4.7",
     "@sabaki/shudan": "^1.7.1",
     "argv-split": "^2.0.1",
+    "better-sqlite3": "^7.6.2",
     "classnames": "^2.2.6",
     "dolm": "^0.7.3-beta",
     "fix-path": "<4.0.0",
