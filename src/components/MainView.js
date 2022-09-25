@@ -1,3 +1,4 @@
+import {ipcRenderer} from 'electron'
 import {h, Component} from 'preact'
 
 import Goban from './Goban.js'
@@ -7,6 +8,7 @@ import GuessBar from './bars/GuessBar.js'
 import AutoplayBar from './bars/AutoplayBar.js'
 import ScoringBar from './bars/ScoringBar.js'
 import FindBar from './bars/FindBar.js'
+import MemoBar from './bars/MemoBar.js'
 
 import sabaki from '../modules/sabaki.js'
 import * as gametree from '../modules/gametree.js'
@@ -32,6 +34,10 @@ export default class MainView extends Component {
 
     this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
     this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
+
+    this.handleMemoButtonClick = evt => {
+      ipcRenderer.send('memo-next', evt.tool)
+    }
   }
 
   componentDidMount() {
@@ -231,6 +237,12 @@ export default class MainView extends Component {
           mode,
           findText,
           onButtonClick: this.handleFindButtonClick
+        }),
+
+        h(MemoBar, {
+          mode,
+          todo: this.props.problemsToDo,
+          onMemoButtonClick: this.handleMemoButtonClick
         })
       )
     )

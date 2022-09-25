@@ -66,6 +66,10 @@ class App extends Component {
       )
     })
 
+    ipcRenderer.on('memo-todo', (evt, val) => {
+      sabaki.setState({problemsToDo: val})
+    })
+
     sabaki.window.on('focus', () => {
       if (setting.get('file.show_reload_warning')) {
         sabaki.askForReload()
@@ -125,7 +129,9 @@ class App extends Component {
         if (sabaki.state.openDrawer != null) {
           sabaki.closeDrawer()
         } else if (sabaki.state.mode !== 'play') {
-          sabaki.setMode('play')
+          if (sabaki.state.mode === 'memo' || !sabaki.state.memo)
+            sabaki.setMode('play')
+          else sabaki.setMode('memo')
         } else if (sabaki.state.fullScreen) {
           sabaki.setState({fullScreen: false})
         }

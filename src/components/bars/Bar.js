@@ -10,7 +10,11 @@ export default class Bar extends Component {
       hidecontent: props.type !== props.mode
     }
 
-    this.onCloseButtonClick = () => sabaki.setMode('play')
+    this.onCloseButtonClick = () => {
+      if (sabaki.state.mode === 'memo' || !sabaki.state.memo)
+        sabaki.setMode('play')
+      else sabaki.setMode('memo')
+    }
   }
 
   componentWillReceiveProps(nextProps) {
