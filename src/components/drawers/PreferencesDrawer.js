@@ -1,3 +1,4 @@
+import {ipcRenderer} from 'electron'
 import {existsSync} from 'fs'
 import {shell} from 'electron'
 import * as remote from '@electron/remote'
@@ -783,6 +784,117 @@ class EnginesTab extends Component {
   }
 }
 
+class MemoTab extends Component {
+  constructor() {
+    super()
+
+    this.handleItemChange = ({id, name, path, args, commands}) => {
+      let engines = this.props.engines.slice()
+
+      engines[id] = {name, path, args, commands}
+      setting.set('engines.list', engines)
+    }
+
+    this.handleItemRemove = ({id}) => {
+      let engines = this.props.engines.slice()
+
+      engines.splice(id, 1)
+      setting.set('engines.list', engines)
+    }
+
+    this.handleAddButtonClick = evt => {
+      evt.preventDefault()
+      ipcRenderer.send('memo-rescan')
+      /*
+      let engines = [{name: '', path: '', args: ''}, ...this.props.engines]
+      setting.set('engines.list', engines)
+
+      setImmediate(() => {
+        this.element.querySelector('.engines-list li:first-child input').focus()
+      })
+*/
+    }
+  }
+
+  render({engines}) {
+    return h(
+      'div',
+      /*
+      h(
+        'ul',
+        {class: 'userpaths'},
+        h(PathInputItem, {
+          id: 'theme.custom_blackstones',
+          text: t('Black stone image:')
+        }),
+        h(PathInputItem, {
+          id: 'theme.custom_whitestones',
+          text: t('White stone image:')
+        }),
+        h(PathInputItem, {
+          id: 'theme.custom_board',
+          text: t('Board image:')
+        }),
+        h(PathInputItem, {
+          id: 'theme.custom_background',
+          text: t('Background image:')
+        })
+      ),
+*/
+      {class: 'memos'},
+      h(
+        'div',
+        {class: 'gtpconsolelog'},
+        h(
+          'ul',
+          {},
+          t('Memo Database:'),
+          /*          
+          h(PreferencesItem, {
+            id: 'gtp.console_log_enabled',
+            text: t('Enable GTP logging to directory:')
+          }),
+*/
+          h(PathInputItem, {
+            id: 'memo.db'
+          })
+        )
+      ),
+      /*      
+      h(
+        'div',
+        {class: 'engines-list'},
+        h(
+          'ul',
+          {},
+          engines.map(({name, path, args, commands}, id) =>
+            h(EngineItem, {
+              id,
+              name,
+              path,
+              args,
+              commands,
+
+              onChange: this.handleItemChange,
+              onRemove: this.handleItemRemove
+            })
+          )
+        )
+      ),
+*/
+      h(
+        'p',
+        {},
+        h(
+          'button',
+          {type: 'button', onClick: this.handleAddButtonClick},
+          t('Rescan')
+        )
+      )
+    )
+  }
+}
+
 export default class PreferencesDrawer extends Component {
   constructor() {
     super()
@@ -793,7 +905,7 @@ export default class PreferencesDrawer extends Component {
     }
 
     this.handleTabClick = evt => {
-      let tabs = ['general', 'themes', 'engines']
+      let tabs = ['general', 'themes', 'engines', 'memos']
       let tab = tabs.find(x => evt.currentTarget.classList.contains(x))
 
       sabaki.setState({preferencesTab: tab})
@@ -873,6 +985,15 @@ export default class PreferencesDrawer extends Component {
           },
 
           h('a', {href: '#'}, t('Engines'))
+        ),
+        h(
+          'li',
+          {
+            class: classNames({memos: true, current: tab === 'memos'}),
+            onClick: this.handleTabClick
+          },
+
+          h('a', {href: '#'}, t('Memo'))
         )
       ),
 
@@ -882,6 +1003,7 @@ export default class PreferencesDrawer extends Component {
         h(GeneralTab, {graphGridSize}),
         h(ThemesTab),
         h(EnginesTab, {engines}),
+        h(MemoTab, {engines}),
 
         h(
           'p',

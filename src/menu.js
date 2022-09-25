@@ -536,6 +536,11 @@ exports.get = function(props = {}) {
           click: () =>
             sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
         },
+        {
+          label: i18n.t('menu.tools', 'Toggle &Memo Mode'),
+          click: () =>
+            sabaki.setMode(sabaki.state.mode === 'memo' ? 'play' : 'memo')
+        },
         {type: 'separator'},
         {
           label: i18n.t('menu.tools', 'Clean &Markup…'),

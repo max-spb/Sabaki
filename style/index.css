@@ -18,7 +18,7 @@
     top: 0;
     right: 0;
     bottom: 40px;
-    background: #C2CB9C url('../img/ui/tatami.png') center;
+    background: #C2CB9C url('../img/ui/tatami-black.png') center;
   }
   #goban {
     box-sizing: border-box;
@@ -158,7 +158,7 @@ header {
   }
   #bar .bar .close:active { opacity: .7; }
   #scoring .close, #estimator .close, #find .close,
-  #guess .close, #autoplay .close {
+  #guess .close, #autoplay .close, #memo .close {
     filter: invert(100%);
   }
   .edit #bar { background: #C4BD64; }
@@ -302,6 +302,62 @@ header {
   }
   #autoplay.playing .play:active {
     background-color: rgba(255, 255, 255, .5);
+}
+
+
+#memo label {
+    color:  rgba(255, 255, 255, .5);
+  }
+  #memo .problems {
+    position: absolute;
+    left: 10px;
+    top: 0;
+    height: 100%;
+  }
+  #memo .play {
+    display: block;
+    left: 0;
+    top: 0;
+    height: 40px;
+    width: 35px;
+    background: url('../node_modules/@primer/octicons/build/svg/triangle-right.svg') center / 20px 20px no-repeat;
+    transform: translateX(-50%);
+    filter: invert(100%);
+    transition: background-image .2s, box-shadow .5s;
+  }
+  #memo .play:hover {
+    background-color: rgba(255, 255, 255, .2);
+  }
+  #memo .play:active {
+    background-color: rgba(255, 255, 255, .3);
+  }
+  #memo ul {
+    display: table;
+    margin: 0 auto;
+    overflow: hidden;
+    list-style: none;
+  }
+  #memo ul li {
+    margin: 0 0;
+    float: left;
+  }
+  #memo ul li a {
+    position: relative;
+    display: block;
+    height: 40px;
+    width: 35px;
+  }
+  .memo #memo ul li a:active {
+    filter: opacity(30%);
+  }
+  #memo ul li a img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 22px;
+    height: 22px;
+    margin-left: -10px;
+    margin-top: -10px;
 }
 
 #leftsidebar {
@@ -989,9 +1045,17 @@ header {
     left: 20px;
     bottom: 14px;
   }
+  #preferences form > div.memos > p {
+    position: absolute;
+    left: 20px;
+    bottom: 14px;
+  }
   #preferences form.general > div.general,
   #preferences form.themes > div.themes,
   #preferences form.engines > div.engines {
+    display: block;
+  }
+  #preferences form.memos > div.memos {
     display: block;
   }
   #preferences .gtpconsolelog ul {

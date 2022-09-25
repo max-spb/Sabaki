@@ -107,7 +107,11 @@ class Sabaki extends EventEmitter {
       // Info Overlay
 
       infoOverlayText: '',
-      showInfoOverlay: false
+      showInfoOverlay: false,
+
+      // Memo
+      memo: false,
+      problemsToDo: 'Not started'
     }
 
     this.events = new EventEmitter()
@@ -243,6 +247,12 @@ class Sabaki extends EventEmitter {
 
   setMode(mode) {
     if (this.state.mode === mode) return
+
+    if (mode === 'memo') {
+      this.state.memo = true
+    } else if (mode === 'play') {
+      this.state.memo = false
+    }
 
     let stateChange = {mode}
 
@@ -557,7 +567,7 @@ class Sabaki extends EventEmitter {
 
     this.setBusy(true)
     if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
-    this.setMode('play')
+    if (this.state.mode !== 'memo') this.setMode('play')
 
     await helper.wait(setting.get('app.loadgame_delay'))
 
