@@ -209,7 +209,6 @@ function memoInitDB() {
       problems_root = dirname(problems_file)
 
       db = new Database(problems_file)
-      db = new Database('memo.db')
 
       db.exec(`CREATE TABLE IF NOT EXISTS problems (
     id TEXT PRIMARY KEY,
@@ -397,6 +396,8 @@ function sm2(problem, q) {
   problem.rd = date2string(rd)
 }
 
+let modeTime = false
+
 function memoNext(q) {
   memoInitDB()
 
@@ -417,24 +418,40 @@ function memoNext(q) {
     problems_stat.done++
   }
 
-  let todo = db
-    .prepare('SELECT COUNT(*) FROM problems WHERE rd <= ?')
-    .bind(date2string(new Date()))
-    .get()['COUNT(*)']
-
+  let todo = 0
   let total = db.prepare('SELECT COUNT(*) FROM problems WHERE q < 4').get()[
     'COUNT(*)'
   ]
 
-  problem = stmt_get_date.get()
+  if (modeTime) {
+    todo = db
+      .prepare('SELECT COUNT(*) FROM problems WHERE rd <= ?')
+      .bind(date2string(new Date()))
+      .get()['COUNT(*)']
 
-  if (!problem) {
+    problem = stmt_get_date.get()
+
+    if (!problem) {
+      modeTime = !modeTime
+
+      if (!problems.length) {
+        problems = stmt_get_q.all(4)
+      }
+
+      todo = problems.length
+      problem = problems.shift()
+    }
+  } else {
     if (!problems.length) {
       problems = stmt_get_q.all(4)
     }
 
     todo = problems.length
     problem = problems.shift()
+
+    if (todo == 1) {
+      modeTime = !modeTime
+    }
   }
 
   console.log(problem)
