@@ -449,8 +449,15 @@ function memoNext(q) {
     todo = problems.length
     problem = problems.shift()
 
-    if (todo == 1) {
+    if (!problem) {
       modeTime = !modeTime
+
+      todo = db
+        .prepare('SELECT COUNT(*) FROM problems WHERE rd <= ?')
+        .bind(date2string(new Date()))
+        .get()['COUNT(*)']
+
+      problem = stmt_get_date.get()
     }
   }
 
