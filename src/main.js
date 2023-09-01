@@ -240,10 +240,13 @@ function memoInitDB() {
         .get()
 
       stmt_get_date = db
-        .prepare('SELECT * FROM problems WHERE rd <= ?')
+        //.prepare('SELECT * FROM problems WHERE rd <= ? ORDER BY ef')
+        .prepare(
+          'SELECT * FROM problems WHERE ((rd <= ?) or (q < 4)) ORDER BY ef'
+        )
         .bind(date2string(new Date()))
 
-      stmt_get_q = db.prepare('SELECT * FROM problems WHERE q < ?')
+      stmt_get_q = db.prepare('SELECT * FROM problems WHERE q < ? ORDER BY ef')
 
       stmt_update = db.prepare(
         'UPDATE problems SET rd = ?, ef = ?, i = ?, n = ?, q = ? WHERE id = ?'
@@ -258,7 +261,7 @@ function memoInitDB() {
 
 function memoCloseDB() {
   if (db) {
-    //    upadteStats()
+    upadteStats()
     db.exec('VACUUM')
     db.close()
     db = undefined
@@ -419,18 +422,20 @@ function memoNext(q) {
   }
 
   let todo = 0
-  let total = db.prepare('SELECT COUNT(*) FROM problems WHERE q < 4').get()[
-    'COUNT(*)'
-  ]
+  let total = problems_stat.done
+  //let total = db.prepare('SELECT COUNT(*) FROM problems WHERE q < 4').get()[
+  //  'COUNT(*)'
+  //]
 
-  if (modeTime) {
-    todo = db
-      .prepare('SELECT COUNT(*) FROM problems WHERE rd <= ?')
-      .bind(date2string(new Date()))
-      .get()['COUNT(*)']
+  //if (modeTime) {
+  todo = db
+    //      .prepare('SELECT COUNT(*) FROM problems WHERE rd <= ?')
+    .prepare('SELECT COUNT(*) FROM problems WHERE ((rd <= ?) or (q < 4))')
+    .bind(date2string(new Date()))
+    .get()['COUNT(*)']
 
-    problem = stmt_get_date.get()
-
+  problem = stmt_get_date.get()
+  /*
     if (!problem) {
       modeTime = !modeTime
 
@@ -460,6 +465,7 @@ function memoNext(q) {
       problem = stmt_get_date.get()
     }
   }
+  */
 
   console.log(problem)
 
