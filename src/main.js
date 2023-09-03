@@ -191,6 +191,7 @@ let problems_file = undefined
 let problems_stat = undefined
 let stmt_stat = undefined
 let problems = []
+let stats = []
 
 function date2string(date) {
   return (
@@ -239,6 +240,13 @@ function memoInitDB() {
         .bind(date2string(new Date()))
         .get()
 
+      stats[0] = problems_stat.m0
+      stats[1] = problems_stat.m1
+      stats[2] = problems_stat.m2
+      stats[3] = problems_stat.m3
+      stats[4] = problems_stat.m4
+      stats[5] = problems_stat.m5
+
       stmt_get_date = db
         //.prepare('SELECT * FROM problems WHERE rd <= ? ORDER BY ef')
         .prepare(
@@ -272,12 +280,12 @@ function memoCloseDB() {
 function upadteStats() {
   stmt_stat = db.prepare('SELECT COUNT(*) FROM problems WHERE q = ?')
 
-  problems_stat.m0 = stmt_stat.get(0)['COUNT(*)']
-  problems_stat.m1 = stmt_stat.get(1)['COUNT(*)']
-  problems_stat.m2 = stmt_stat.get(2)['COUNT(*)']
-  problems_stat.m3 = stmt_stat.get(3)['COUNT(*)']
-  problems_stat.m4 = stmt_stat.get(4)['COUNT(*)']
-  problems_stat.m5 = stmt_stat.get(5)['COUNT(*)']
+  problems_stat.m0 = stats[0] //stmt_stat.get(0)['COUNT(*)']
+  problems_stat.m1 = stats[1] //stmt_stat.get(1)['COUNT(*)']
+  problems_stat.m2 = stats[2] //stmt_stat.get(2)['COUNT(*)']
+  problems_stat.m3 = stats[3] //stmt_stat.get(3)['COUNT(*)']
+  problems_stat.m4 = stats[4] //stmt_stat.get(4)['COUNT(*)']
+  problems_stat.m5 = stats[5] //stmt_stat.get(5)['COUNT(*)']
 
   console.log(problems_stat)
 
@@ -370,6 +378,8 @@ function sm2(problem, q) {
   let rd = new Date()
 
   if (q > 0) {
+    stats[q]++
+
     if (q >= 3) {
       // correct response
       if (problem.n == 0) {
